@@ -1,4 +1,10 @@
 # This is a sample .gitignore file
+# Data and tools
+data/
+juicebox/
+plot/
+readme.md
+bigwig_tools/
 
 # Python
 *.pyc
@@ -10,6 +16,7 @@ venv/
 venv3/
 .venv/
 .pytest_cache
+.idea/
 
 # JavaScript
 bundle.js

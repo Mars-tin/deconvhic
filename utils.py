@@ -21,13 +21,35 @@ def process_bed():
             fw.write(s)
 
 
+def plot_atac_signal(fname):
+    start = 15000000
+    end = 17000000
+    res = 2000
+    ran = 1000
+
+    bw = pyBigWig.open(fname)
+    if not bw.isBigWig():
+        exit(-1)
+    signal = np.array(bw.intervals("chr21", start, end))
+    bw.close()
+
+    plt.figure(figsize=[20, 5])
+    plt.fill_between((signal[:, 0]-start)/res, 0, signal[:, 2], step="pre")
+    plt.xticks(np.arange(0, ran, step=50))
+    plt.plot((signal[:, 0]-start)/res, signal[:, 2], drawstyle="steps")
+
+    # pos = (signal[:, 0]-15000000) / 2000
+    # wid = (signal[:, 1] - signal[:, 0]) / 2000
+    # plt.bar(pos, signal[:, 2], width=wid)
+
+    axes = plt.gca()
+    axes.set_xlim([0, 1000])
+    axes.set_ylim([0, 35])
+    plt.savefig("signal.png")
+    plt.show()
+
+
 def get_open_region(fname):
-    """
-    bw_hESC = pyBigWig.open(bw_hESC_fname)
-    bw_hESC_chrom = dict(bw_hESC.chroms())
-    bw_hESC_header = dict(bw_hESC.header())
-    bw_hESC.close()
-    """
     fr = open(fname, 'r')
     items = [line.split() for line in fr]
     fr.close()
@@ -89,12 +111,13 @@ def load_hic_matrix(fname, region, resolution=2000):
 
 
 def get_share_function(anc11, anc12, anc21, anc22, decay):
+    min_rate = 0.2
     v1 = anc11 * anc12 / decay
     v2 = anc21 * anc22 / decay
     if v1 == 0 and v2 == 0:
-        return 0.5, 0.5
-    share = max(0.8, v1/(v1+v2))
-    share = min(0.2, share)
+        return 0.4, 0.6
+    share = max(1-min_rate, v1/(v1+v2))
+    share = min(min_rate, share)
     return share, 1-share
 
 

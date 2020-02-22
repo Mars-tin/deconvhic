@@ -17,10 +17,11 @@ def tho_k(string1, string2):
     return r_1k(string1, string2) / r_2k(string1, string2)
 
 
-def hiCRep(contact1, contact2):
-    L = np.shape(contact1)[0]
+def hiCRep(contact1, contact2, L=300):
+    if L is None:
+        L = np.shape(contact1)[0]
     r1k, r2k, thok, N = [], [], [], []
-    for i in range(1, L - 10):
+    for i in range(1, L):
         index = [j for j in range(L - i)]
         index2 = [j + i for j in range(L - i)]
         string1, string2 = contact1[index, index2], contact2[index, index2]

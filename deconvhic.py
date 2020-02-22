@@ -1,5 +1,5 @@
 from utils import load_hic_matrix, hic_mix, show_HiC_plot, \
-    get_open_region, get_open_rate, get_share, deconvolute
+    get_open_region, get_open_rate, get_share, deconvolute, plot_atac_signal
 from hicrep import hiCRep
 
 
@@ -11,10 +11,16 @@ def main():
     # ran = [0, 5000]
 
     # Filenames
+    bw_HFF_fname = "data/atac-seq/bigwig/atac-seq-hdd-2m.bw"
+    bw_hESC_fname = "data/atac-seq/bigwig/atac-seq-hesc-2m.bw"
     hic_hESC_fname = "data/hic/H1_hESC_chr21_2kb_10m.txt"
     hic_HFF_fname = "data/hic/HFF_chr21_2kb_10m.txt"
     bed_hESC_fname = "data/atac-seq/processed/hesc_chr21_pro.txt"
     bed_HFF_fname = "data/atac-seq/processed/hff_chr21_pro.txt"
+
+    # Plot ATAC-seq signals
+    plot_atac_signal(bw_hESC_fname)
+    plot_atac_signal(bw_HFF_fname)
 
     # Process ATAC-seq
     hESC_open_region = get_open_region(bed_hESC_fname)
@@ -42,9 +48,6 @@ def main():
     hESC_open_rate = get_open_rate(hESC_open_region, resolution, region)
     HFF_open_rate = get_open_rate(HFF_open_region, resolution, region)
     hESC_share, HFF_share = get_share(hESC_open_rate, HFF_open_rate)
-
-    # show_HiC_plot(hESC_share, ran, vmax=1)
-    # show_HiC_plot(HFF_share, ran, vmax=1)
 
     decov_hESC_matrix = deconvolute(hESC_share, hic_mix_matrix)
     decov_HFF_matrix = deconvolute(HFF_share, hic_mix_matrix)
